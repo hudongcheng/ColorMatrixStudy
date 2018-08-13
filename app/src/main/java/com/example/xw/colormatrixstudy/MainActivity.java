@@ -12,14 +12,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
     private ImageView mImageView;
     private GridLayout mGroup;
     private Bitmap bitmap;
     private int mEtWidth, mEtHeight;
     private EditText[] mEts = new EditText[20];
     private float[] mColorMatrix = new float[20];
+    private SeekBar mSeekbar;
+    private float mSaturation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +45,18 @@ public class MainActivity extends AppCompatActivity {
                 initMatrix();
             }
         });
+
+        mSeekbar = findViewById(R.id.seekBar2);
+        mSeekbar.setProgress(50);
+
+        mSeekbar.setOnSeekBarChangeListener(this);
+
+        //ColorMatrix colorMatrix = new ColorMatrix();
+        //colorMatrix.setSaturation();
+        //colorMatrix.setConcat();
     }
+
+
     // 获取矩阵值
     private void getMatrix() {
         for (int i = 0; i < 20; i++) {
@@ -58,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap.Config.ARGB_8888);
         android.graphics.ColorMatrix colorMatrix =
                 new android.graphics.ColorMatrix();
-        colorMatrix.set(mColorMatrix);
+        //colorMatrix.set(mColorMatrix);
+        colorMatrix.setSaturation(mSaturation);
 
         Canvas canvas = new Canvas(bmp);
         Paint paint = new Paint();
@@ -98,5 +114,23 @@ public class MainActivity extends AppCompatActivity {
                 mEts[i].setText(String.valueOf(0));
             }
         }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        mSaturation = progress * 1.0F / 50;
+
+        getMatrix();
+        setImageMatrix();
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }
